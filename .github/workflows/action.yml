@@ -1,0 +1,38 @@
+name: testing
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+  
+  steps: 
+  - uses: actions/checkout@v3
+    with:
+      ref: 'helm-charts-change'
+
+  - name: Get chart version from staging
+    id: staging
+    run: |
+      VERSION=${{ git rev-list --count helm-charts-change }}
+      echo ::set-output name=VERSION::${VERSION}  
+
+  - name: change the helm version
+    env:
+          CHART_VERSION: ${{ steps.staging.outputs.version }}
+    run: |
+    yq eval '.version=env(CHART_VERSION)' -i trivy-config.yaml
+
+  - uses: stefanzweifel/git-auto-commit-action@v4
+    with:
+      commit_message: Automated Change
+      branch: helm-charts-change
+
+         
+  
