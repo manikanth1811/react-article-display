@@ -6,8 +6,8 @@ replicaCount: 2
 
 image:
   repository: anaisurlichs/react-example
-  tag: 0.0.1
-  pullPolicy: IfNotPresent
+  tag: latest
+  pullPolicy: Always
 
 imagePullSecrets: []
 nameOverride: ""
